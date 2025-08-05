@@ -1,0 +1,100 @@
+<html>
+
+<head>
+  <title>Express</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <style>
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: translateZ(0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .loading-hidden {
+      display: none;
+    }
+
+    .loading-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .loading-spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mt-5 mx-auto">
+        <div class="card shadow-lg">
+          <h5 class="card-title text-center my-3">Login</h5>
+          <div class="card-body">
+            <form class="d-flex flex-column align-items-center" action="/login" method="post" >
+              <div class="form-group my-3">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" placeholder="Enter username">
+              </div>
+              <div class="form-group my-3">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter password">
+              </div>
+              <button type="submit" class="btn btn-primary mx-auto">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loading loading-hidden">
+    <div class="spinner-border loading-spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+  <script>
+    document.querySelector('form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      document.querySelector('.loading').classList.remove('loading-hidden');
+      const request = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: document.querySelector('#username').value,
+          password: document.querySelector('#password').value
+        })
+      });
+      setTimeout(async () => {
+        const response = await request.json();
+        if (response.success) {
+          window.location.href = '/';
+        } else {
+          alert(response.message);
+        }
+        document.querySelector('.loading').classList.add('loading-hidden');
+      }, 1500);
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,241 @@
+<html>
+
+<head>
+    <title>Express</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
+        integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row my-2">
+            <div class="col-md-4 mx-auto">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Username: <%= username %>
+                        </h5>
+                        <button class="btn btn-danger" id="logout-button" onclick="logout()">ออกจากระบบ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="search-input" placeholder="Search">
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-primary" id="add-button" data-bs-toggle="modal"
+                            data-bs-target="#add-modal">Add</button>
+                    </div>
+                </div>
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Province</th>
+                            <th>District</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="add-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">เพิ่มร้านกาแฟ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-form">
+                        <div class="form-group">
+                            <label for="name">ชื่อร้าน</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="province">จังหวัด</label>
+                            <input type="text" class="form-control" id="province" name="province">
+                        </div>
+                        <div class="form-group">
+                            <label for="district">อำเภอ</label>
+                            <input type="text" class="form-control" id="district" name="district">
+                        </div>
+                        <button type="submit" class="btn btn-primary">เพิ่ม</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="edit-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">แก้ไขร้านกาแฟ</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-form">
+                        <div class="form-group">
+                            <label for="name">ชื่อร้าน</label>
+                            <input type="text" class="form-control" id="edit-name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="province">จังหวัด</label>
+                            <input type="text" class="form-control" id="edit-province" name="province">
+                        </div>
+                        <div class="form-group">
+                            <label for="district">อำเภอ</label>
+                            <input type="text" class="form-control" id="edit-district" name="district">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">แก้ไข</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                            <input type="hidden" class="form-control" id="edit-id" name="id" readonly>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const addModal = new bootstrap.Modal('#add-modal');
+        const editModal = new bootstrap.Modal('#edit-modal');
+        let shopDataList = [];
+        const tableBody = document.getElementById('table-body');
+        const getShop = async () => {
+            const searchInput = document.getElementById('search-input');
+            const searchValue = searchInput.value;
+            const response = await fetch(`/shops?search=${searchValue}`);
+            const data = await response.json();
+            let shopData = '';
+            data.data.forEach(shop => {
+                shopData += `
+                <tr>
+                    <td>${shop.id}</td>
+                    <td>${shop.name}</td>
+                    <td>${shop.province}</td>
+                    <td>${shop.district}</td>
+                    <td>
+                        <button class="btn btn-primary" id="edit-button" data-bs-toggle="modal"
+                            data-bs-target="#edit-modal" onclick="editShop(${shop.id})">แก้ไข</button>
+                        <button class="btn btn-danger" id="delete-button" onclick="deleteShop(${shop.id})">ลบ</button>
+                        </td>
+                        </tr>
+                        `;
+            });
+            tableBody.innerHTML = shopData;
+            shopDataList = data.data;
+        }
+        document.getElementById('search-input').addEventListener('keyup', () => {
+            getShop();
+        });
+        getShop();
+        const myModalAdd = document.getElementById('add-modal');
+        myModalAdd.addEventListener('show.bs.modal', function (event) {
+            // const button = event.relatedTarget;
+            // const modalTitle = myModalAdd.querySelector('.modal-title');
+            // const modalBodyInput = myModalAdd.querySelector('.modal-body input');
+            // modalTitle.textContent = 'Add Shop';
+            // modalBodyInput.value = '';
+        });
+        document.getElementById('add-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            // const formData = new FormData(event.target);
+            // console.log(formData);
+            const response = await fetch('/shops', {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: document.getElementById('name').value,
+                    province: document.getElementById('province').value,
+                    district: document.getElementById('district').value
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            if (data.success) {
+                alert(data.message);
+                addModal.hide();
+                getShop();
+            } else {
+                alert(data.message);
+            }
+        });
+        const editShop = (id) => {
+            const shop = shopDataList.find(shop => shop.id == id);
+            console.log(shop);
+            document.getElementById('edit-name').value = shop.name;
+            document.getElementById('edit-province').value = shop.province;
+            document.getElementById('edit-district').value = shop.district;
+            document.getElementById('edit-id').value = shop.id;
+            // document.getElementById('edit-modal').showModal();
+        }
+        document.getElementById('edit-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const response = await fetch(`/shops/${document.getElementById('edit-id').value}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: document.getElementById('edit-name').value,
+                    province: document.getElementById('edit-province').value,
+                    district: document.getElementById('edit-district').value
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            if (data.success) {
+                alert(data.message);
+                editModal.hide();
+                getShop();
+            } else {
+                alert(data.message);
+            }
+        });
+        document.getElementById('edit-modal').addEventListener('hidden.bs.modal', function (event) {
+            document.getElementById('edit-form').reset();
+        });
+        const deleteShop = async (id) => {
+            const confirm = window.confirm('คุณต้องการลบร้านกาแฟนี้หรือไม่?');
+            if (confirm) {
+                const response = await fetch(`/shops/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert(data.message);
+                    getShop();
+                } else {
+                    alert(data.message);
+                }
+            }
+        }
+        const logout = async () => {
+            const response = await fetch('/logout', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            if (data.success) {
+                alert(data.message);
+                window.location.href = '/login';
+            }
+        }
+    </script>
+</body>
+
+</html>

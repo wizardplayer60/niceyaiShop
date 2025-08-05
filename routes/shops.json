@@ -1,0 +1,65 @@
+{
+  "count": 12,
+  "data": [
+    {
+      "id": 1,
+      "name": "Graph Cafe",
+      "province": "เชียงใหม่",
+      "district": "เมืองเชียงใหม่"
+    },
+    {
+      "id": 2,
+      "name": "Ristr8to Coffee",
+      "province": "เชียงใหม่",
+      "district": "เมืองเชียงใหม่"
+    },
+    {
+      "id": 3,
+      "name": "The Little Prince Café Bangkok",
+      "province": "กรุงเทพมหานคร",
+      "district": "เขตสาทร"
+    },
+    {
+      "id": 4,
+      "name": "Ryoku Cafe",
+      "province": "กรุงเทพมหานคร",
+      "district": "เขตวัฒนา"
+    },
+    {
+      "id": 5,
+      "name": "Harudot Chonburi by Nana Coffee Roaster",
+      "province": "ชลบุรี",
+      "district": "เมืองชลบุรี"
+    },
+    {
+      "id": 6,
+      "name": "Carp cafe'sriracha",
+      "province": "ชลบุรี",
+      "district": "ศรีราชา"
+    },
+    {
+      "id": 7,
+      "name": "Refill Coffee",
+      "province": "ขอนแก่น",
+      "district": "เมืองขอนแก่น"
+    },
+    {
+      "id": 8,
+      "name": "Godfather Coffee - II Khonkaen",
+      "province": "ขอนแก่น",
+      "district": "เมืองขอนแก่น"
+    },
+    {
+      "id": 9,
+      "name": "Campus Coffee Roaster",
+      "province": "ภูเก็ต",
+      "district": "เมืองภูเก็ต"
+    },
+    {
+      "id": 12,
+      "name": "test2",
+      "province": "1",
+      "district": "23"
+    }
+  ]
+}
